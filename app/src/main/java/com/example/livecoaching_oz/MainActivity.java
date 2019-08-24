@@ -23,7 +23,13 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements Decoder {
 
+    // finals
     private final String TAG = MainActivity.class.getSimpleName();
+    private final String goRightOrder = "Right";
+    private final String goLeftOrder = "Left";
+    private final String goStraightOrder = "Straight";
+    private final String finishOrder = "Finish";
+    private final String startOrder = "Start";
 
     // UI components
     private Button startButton;
@@ -32,16 +38,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private Button rightButton;
     private Button straightButton;
     protected AlertDialog startRunDialog;
-
-    // feedback
-    private Vibrator vibrator;
-    private int interactionType;
-    private boolean vibroIsForbidden;
-    private int patternIndex = 100; // 3: strait, -1: left, 1: right
-
-    private long[] pattern;
-    private int[] amplitudes;
-    private int indexInPatternToRepeat = 0;
 
     // Communication
     private ClientTask myClientTask;
@@ -112,15 +108,33 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void initRightButton(){
-
+        rightButton = findViewById(R.id.rightButton);
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendOrder(goRightOrder);
+            }
+        });
     }
 
     private void initLeftButton(){
-
+        leftButton = findViewById(R.id.leftButton);
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendOrder(goLeftOrder);
+            }
+        });
     }
 
     private void initStraightButton(){
-
+        straightButton = findViewById(R.id.straightButton);
+        straightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendOrder(goStraightOrder);
+            }
+        });
     }
 
     // ~~~~~~~~~~~~ Decoder methods  ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,26 +151,22 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // ~~~~~~~~~~~~  Logic functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
     private void startRun(String ID){
-        // reset values
+        initValues();
+        sendOrder(startOrder);
         // update UI
     }
 
     private void finishRun(){
         // log Values
-        // reset Values ?
+        initValues();
+        sendOrder(finishOrder);
         // update UI
     }
 
-    private void orderLeft(){
-
-    }
-
-    private void orderRight(){
-
-    }
-
-    private void orderStraight(){
-
+    private void sendOrder(String order){
+        Log.d(TAG, "sending order : " + order);
+        myClientTask = new ClientTask(order, this);
+        myClientTask.execute();
     }
 
     protected boolean isValid(String text) {
@@ -257,31 +267,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     // ~~~~~~~~~~~~  gets and sets  ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-    public int getInteractionType() {
-        return interactionType;
-    }
-
-    public void setInteractionType(int interactionType) {
-        this.interactionType = interactionType;
-    }
-
-    public boolean isVibroIsForbidden() {
-        return vibroIsForbidden;
-    }
-
-    public void setVibroIsForbidden(boolean vibroIsForbidden) {
-        this.vibroIsForbidden = vibroIsForbidden;
-    }
-
-    public int getIndexInPatternToRepeat() {
-        return indexInPatternToRepeat;
-    }
-
-    public void setIndexInPatternToRepeat(int indexInPatternToRepeat) {
-        this.indexInPatternToRepeat = indexInPatternToRepeat;
-    }
 
     public ClientTask getMyClientTask() {
         return myClientTask;
