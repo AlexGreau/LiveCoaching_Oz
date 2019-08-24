@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.livecoaching_oz.Communication.ClientTask;
 import com.example.livecoaching_oz.Communication.Decoder;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         numberOfCorrectionMade = 0;
         ID = "";
         Order = "stay";
+        Date date = new Date();
+        startTime = date.getTime();
+        finishTime = date.getTime();
     }
 
     private void initUI() {
@@ -170,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void finishRun(){
+        Date date = new Date();
+        finishTime = date.getTime();
         // log Values
         initValues();
         sendOrder(finishOrder);
@@ -311,5 +317,21 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     public void setOrder(String order) {
         Order = order;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(long finishTime) {
+        this.finishTime = finishTime;
     }
 }
