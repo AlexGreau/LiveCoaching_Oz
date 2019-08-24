@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,8 +58,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         init();
+        setFullScreen();
     }
 
     // ~~~~~~~~~~~~  inits  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initValues();
         initUI();
         initCommunication();
-        setFullScreen();
     }
 
     private void initValues(){
@@ -226,6 +228,32 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                         // Hide the nav bar and status bar
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            setFullScreen();
+        }
+    }
+    // ~~~~~~~~~~~~  lifecycle functions  ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "Destroying...");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "Stopping...");
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     // ~~~~~~~~~~~~  gets and sets  ~~~~~~~~~~~~~~~~~~~~~~~~
