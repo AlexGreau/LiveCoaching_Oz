@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     // UI components
     private Button startButton;
-    private Button stopButton;
+    private Button finishButton;
     private Button leftButton;
     private Button rightButton;
     private Button straightButton;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // Logic Values
         // start time
         // finish time
-        // current direction
     private int numberOfCorrectionMade;
     private String ID;
     private String Order;
@@ -71,11 +70,13 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     private void initValues(){
         numberOfCorrectionMade = 0;
+        ID = "";
+        Order = "stay";
     }
 
     private void initUI() {
         initStartButton();
-        initStopButton();
+        initFinishButton();
         initLeftButton();
         initRightButton();
         initStraightButton();
@@ -86,15 +87,24 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void initStartButton(){
+        startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buildStartDialog().show();
+                startRunDialog = buildStartDialog();
+                startRunDialog.show();
             }
         });
     }
 
-    private void initStopButton(){
+    private void initFinishButton(){
+        finishButton = findViewById(R.id.finishButton);
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buildStopRunDialog().show();
+            }
+        });
 
     }
 
@@ -124,11 +134,14 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // ~~~~~~~~~~~~  Logic functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
     private void startRun(String ID){
-
+        // reset values
+        // update UI
     }
 
-    private void stopRun(){
-
+    private void finishRun(){
+        // log Values
+        // reset Values ?
+        // update UI
     }
 
     private void orderLeft(){
@@ -183,6 +196,22 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return builder.create();
     }
 
+    private AlertDialog buildStopRunDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Finish Experience")
+                .setMessage("Are you sure you want to end this experience?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishRun();
+                    }
+                })
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        return builder.create();
+    }
+
     // ~~~~~~~~~~~~ UI functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
     protected void setFullScreen() {
@@ -201,4 +230,59 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // ~~~~~~~~~~~~  gets and sets  ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+    public int getInteractionType() {
+        return interactionType;
+    }
+
+    public void setInteractionType(int interactionType) {
+        this.interactionType = interactionType;
+    }
+
+    public boolean isVibroIsForbidden() {
+        return vibroIsForbidden;
+    }
+
+    public void setVibroIsForbidden(boolean vibroIsForbidden) {
+        this.vibroIsForbidden = vibroIsForbidden;
+    }
+
+    public int getIndexInPatternToRepeat() {
+        return indexInPatternToRepeat;
+    }
+
+    public void setIndexInPatternToRepeat(int indexInPatternToRepeat) {
+        this.indexInPatternToRepeat = indexInPatternToRepeat;
+    }
+
+    public ClientTask getMyClientTask() {
+        return myClientTask;
+    }
+
+    public void setMyClientTask(ClientTask myClientTask) {
+        this.myClientTask = myClientTask;
+    }
+
+    public int getNumberOfCorrectionMade() {
+        return numberOfCorrectionMade;
+    }
+
+    public void setNumberOfCorrectionMade(int numberOfCorrectionMade) {
+        this.numberOfCorrectionMade = numberOfCorrectionMade;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getOrder() {
+        return Order;
+    }
+
+    public void setOrder(String order) {
+        Order = order;
+    }
 }
