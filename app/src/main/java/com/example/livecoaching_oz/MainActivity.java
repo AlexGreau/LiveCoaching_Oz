@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initValues();
         initUI();
         initCommunication();
+        setFullScreen();
     }
 
     private void initValues(){
