@@ -41,8 +41,8 @@ public class ClientTask extends AsyncTask<Void, Void, Void> {
             dataInputStream = new DataInputStream(socket.getInputStream());
 
             if (msgToServer != null) {
-                Date date = new Date();
-                msgToServer = msgToServer + "_" + date.getTime();
+
+                msgToServer = msgToServer;
                 dataOutputStream.writeUTF(msgToServer);
                 System.out.println("sent : " + msgToServer);
             }

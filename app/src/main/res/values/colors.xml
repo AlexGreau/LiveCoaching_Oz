@@ -6,4 +6,5 @@
     <color name="finishColor">#c71d1a</color>
     <color name="startColor">#24ab38</color>
     <color name="orderColor">#f7f5ad</color>
+    <color name="checkpoint">#3460c7</color>
 </resources>

@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private final String goStraightOrder = "Straight";
     private final String finishOrder = "Finish";
     private final String startOrder = "Start";
+    private final String checkpointReachedOrder = "CP";
 
     // UI components
     private Button startButton;
@@ -37,14 +38,15 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private Button leftButton;
     private Button rightButton;
     private Button straightButton;
+    private Button checkPointButton;
     protected AlertDialog startRunDialog;
 
     // Communication
     private ClientTask myClientTask;
 
     // Logic Values
-        // start time
-        // finish time
+    private long startTime;
+    private long finishTime;
     private int numberOfCorrectionMade;
     private String ID;
     private String Order;
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initLeftButton();
         initRightButton();
         initStraightButton();
+        initCheckPointButton();
     }
 
     private void initCommunication() {
@@ -133,6 +136,16 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             @Override
             public void onClick(View v) {
                 sendOrder(goStraightOrder);
+            }
+        });
+    }
+
+    private void initCheckPointButton(){
+        checkPointButton = findViewById(R.id.checkPointButton);
+        checkPointButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendOrder(checkpointReachedOrder);
             }
         });
     }

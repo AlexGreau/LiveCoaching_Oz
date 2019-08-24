@@ -47,4 +47,11 @@
         android:text="Right"
         android:backgroundTint="@color/orderColor" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkPointButton"
+        android:text="CheckPoint"
+        android:backgroundTint="@color/checkpoint"/>
+
 </LinearLayout>
