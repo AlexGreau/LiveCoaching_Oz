@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private final String finishOrder = "Finish";
     private final String startOrder = "Start";
     private final String checkpointReachedOrder = "CP";
+    private final int hapticCode = -1;
+    private final int visualCode = 1;
+    private final int bothCode = 0;
+    private final String separator = ";";
 
     // UI components
     private Button startButton;
@@ -49,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private long startTime;
     private long finishTime;
     private int numberOfCorrectionMade;
+    private long totalTime;
     private String ID;
     private String Order;
+    int interactionType;
 
     // Logger
 
@@ -73,10 +79,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private void initValues(){
         numberOfCorrectionMade = 0;
         ID = "";
-        Order = "stay";
+        Order = finishOrder;
         Date date = new Date();
         startTime = date.getTime();
         finishTime = date.getTime();
+        totalTime = 0;
+        interactionType = bothCode;
     }
 
     private void initUI() {
@@ -170,21 +178,25 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private void startRun(String ID){
         initValues();
         sendOrder(startOrder);
+        Date date = new Date();
+        startTime = date.getTime();
         // update UI
     }
 
     private void finishRun(){
         Date date = new Date();
         finishTime = date.getTime();
+        totalTime = finishTime - startTime;
         // log Values
-        initValues();
         sendOrder(finishOrder);
         // update UI
+        initValues();
     }
 
     private void sendOrder(String order){
         Log.d(TAG, "sending order : " + order);
-        myClientTask = new ClientTask(order, this);
+        String message = interactionType + separator + order;
+        myClientTask = new ClientTask(message, this);
         myClientTask.execute();
     }
 
@@ -215,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 Log.d(TAG, textId);
                 if (isValid(textId)) {
                     ID = textId;
+
                     startRun(textId);
                     startRunDialog.dismiss();
                 } else {
