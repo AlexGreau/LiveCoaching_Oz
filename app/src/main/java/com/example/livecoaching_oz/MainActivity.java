@@ -59,15 +59,18 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // Logic Values
     private long startTime;
     private long finishTime;
-    private int numberOfCorrectionMade;
     private long totalTime;
     private String ID;
     private String Order;
     private int interactionType;
+    private int trialNumber;
+    private int numberOfCorrectionMade;
+    private int totalSuccess;
+
+    // Flags
     private boolean isHapticRequested;
     private boolean isVisualRequested;
     private boolean isTestMode;
-    private int trialNumber;
 
     // Logger
     private Logger logger;
@@ -91,17 +94,18 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void initValues() {
-        numberOfCorrectionMade = 0;
         ID = "";
         Order = finishOrder;
         Date date = new Date();
         startTime = date.getTime();
         finishTime = date.getTime();
         totalTime = 0;
+        numberOfCorrectionMade = 0;
+        totalSuccess = 0;
         isVisualRequested = true;
         isHapticRequested = true;
         isTestMode = false;
-        determineInterationINT();
+        determineInteraction();
     }
 
     private void initUI() {
@@ -145,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                     startRunDialog = buildStartDialog();
                     startRunDialog.show();
                 }
-
             }
         });
     }
@@ -267,15 +270,18 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         totalTime = finishTime - startTime;
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
-        // log Values
+        if (!isTestMode) {
+            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), trialNumber, numberOfCorrectionMade, totalSuccess, totalTime);
+        }
         sendOrder(finishOrder);
+
         initValues();
         updateUI(false);
     }
 
     private void sendOrder(String order) {
         Log.d(TAG, "sending order : " + order);
-        determineInterationINT();
+        determineInteraction();
         String message = interactionType + separator + order;
         myClientTask = new ClientTask(message, this);
         myClientTask.execute();
@@ -294,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return matcher.matches();
     }
 
-    private void determineInterationINT() {
+    private void determineInteraction() {
         if (!isHapticRequested && !isVisualRequested) {
             hapticSwitch.performClick();
             visualSwitch.performClick();
@@ -309,6 +315,31 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         } else if (isHapticRequested && !isVisualRequested) {
             // only haptic
             interactionType = hapticCode;
+        }
+    }
+
+    private String getInteractionTypeString(int i) {
+        String res = "";
+        if (i == bothCode) {
+            res = "both";
+        } else if (i == hapticCode) {
+            res = "haptic";
+        } else if (i == visualCode) {
+            res = "visual";
+        } else {
+            res = "invalid";
+        }
+
+        return res;
+    }
+
+    private double calculateSuccessRate() {
+        double nAttempts = numberOfCorrectionMade;
+        double nSuccess = totalSuccess;
+        if (numberOfCorrectionMade == 0) {
+            return 0;
+        } else {
+            return nSuccess / nAttempts;
         }
     }
 
