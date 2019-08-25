@@ -11,47 +11,71 @@
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="150sp" />
+        android:textSize="130sp" />
 
     <RelativeLayout
         android:id="@+id/startBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
+        android:gravity="center">
 
         <Button
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/options"
             android:backgroundTint="@color/startColor"
             android:text="Start Run"
             android:textSize="50sp" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/startButton"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            >
 
-            <Switch
-                android:id="@+id/hapticSwitch"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:switchPadding="5dp"
-                android:text="Haptic Feedback" />
+                android:layout_below="@id/optionsTitle"
+                android:orientation="vertical">
 
-            <Switch
-                android:id="@+id/visualSwitch"
+                <Switch
+                    android:id="@+id/hapticSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/optionsTitle"
+                    android:checked="true"
+                    android:switchPadding="5dp"
+                    android:text="Haptic Feedback" />
+
+                <Switch
+                    android:id="@+id/visualSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:switchPadding="5dp"
+                    android:text="Visual Feedback" />
+
+                <Switch
+                    android:id="@+id/testModeSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:switchPadding="5dp"
+                    android:text="Test Mode" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/optionsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:switchPadding="5dp"
-                android:text="Visual Feedback" />
+                android:gravity="left"
+                android:text="Options :"
+                android:textSize="18sp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </RelativeLayout>
@@ -66,10 +90,10 @@
             android:id="@+id/finishButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:backgroundTint="@color/finishColor"
             android:text="End Run"
-            android:textSize="40sp"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="40sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -80,9 +104,9 @@
                 android:id="@+id/straightButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:backgroundTint="@color/orderColor"
-                android:text="Straight"
-                android:layout_centerHorizontal="true"/>
+                android:text="Straight" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
