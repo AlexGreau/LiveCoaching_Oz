@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.livecoaching_oz.Communication.ClientTask;
 import com.example.livecoaching_oz.Communication.Decoder;
+import com.example.livecoaching_oz.Logs.Logger;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private boolean isTestMode;
 
     // Logger
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initValues();
         initUI();
         initCommunication();
+        initLogger();
     }
 
     private void initValues() {
@@ -119,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     private void initCommunication() {
         myClientTask = new ClientTask("hey !", this);
+    }
+
+    private void initLogger(){
+        logger = new Logger(this);
+
     }
 
     private void initChrono() {
