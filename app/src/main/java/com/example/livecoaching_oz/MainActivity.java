@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void initUI() {
+        findViewById(R.id.startBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.runningBar).setVisibility(View.GONE);
         initStartButton();
         initFinishButton();
         initLeftButton();
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         myClientTask = new ClientTask("hey !", this);
     }
 
-    private void initChrono(){
+    private void initChrono() {
         chronometer = findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime());
     }
@@ -227,9 +229,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         Date date = new Date();
         finishTime = date.getTime();
         totalTime = finishTime - startTime;
-        Log.d(TAG, "calculated total time" + totalTime);
         chronometer.stop();
-        Log.d(TAG, "chrono time" + chronometer.getBase());
+        chronometer.setBase(SystemClock.elapsedRealtime());
         // log Values
         sendOrder(finishOrder);
         updateUI(false);
@@ -321,7 +322,14 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     // ~~~~~~~~~~~~ UI functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private void updateUI(boolean isRunning){
+    private void updateUI(boolean isRunning) {
+        if (isRunning) {
+            findViewById(R.id.startBar).setVisibility(View.GONE);
+            findViewById(R.id.runningBar).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.startBar).setVisibility(View.VISIBLE);
+            findViewById(R.id.runningBar).setVisibility(View.GONE);
+        }
         finishButton.setEnabled(isRunning);
         straightButton.setEnabled(isRunning);
         rightButton.setEnabled(isRunning);
@@ -330,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startButton.setEnabled(!isRunning);
     }
 
-    private void setUITestMode(){
+    private void setUITestMode() {
 
     }
 

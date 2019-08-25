@@ -8,69 +8,114 @@
     tools:context=".MainActivity">
 
     <Chronometer
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/chronometer"
-        android:textSize="150sp"
-        />
-
-    <Button
-        android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/startColor"
-        android:text="Start Run" />
+        android:textSize="150sp" />
 
-    <Button
-        android:id="@+id/finishButton"
+    <RelativeLayout
+        android:id="@+id/startBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/finishColor"
-        android:text="End Run" />
+        >
 
-    <Button
-        android:id="@+id/straightButton"
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/startColor"
+            android:text="Start Run"
+            android:textSize="50sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/startButton"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Switch
+                android:id="@+id/hapticSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:switchPadding="5dp"
+                android:text="Haptic Feedback" />
+
+            <Switch
+                android:id="@+id/visualSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:switchPadding="5dp"
+                android:text="Visual Feedback" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/runningBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/orderColor"
-        android:text="Straight" />
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/leftButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/orderColor"
-        android:text="Left" />
+        <Button
+            android:id="@+id/finishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/finishColor"
+            android:text="End Run"
+            android:textSize="40sp"
+            android:layout_centerHorizontal="true"/>
 
-    <Button
-        android:id="@+id/rightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/orderColor"
-        android:text="Right" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/finishButton">
 
-    <Button
-        android:id="@+id/checkPointButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/checkpoint"
-        android:text="CheckPoint" />
+            <Button
+                android:id="@+id/straightButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orderColor"
+                android:text="Straight"
+                android:layout_centerHorizontal="true"/>
 
-    <Switch
-        android:id="@+id/hapticSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:switchPadding="5dp"
-        android:text="Haptic Feedback"
-        android:checked="true"
-        />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/straightButton"
+                android:orientation="horizontal">
 
-    <Switch
-        android:id="@+id/visualSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Visual Feedback"
-        android:switchPadding="5dp"
-        android:checked="true"
-        />
+                <Button
+                    android:id="@+id/leftButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Left" />
+
+                <Button
+                    android:id="@+id/checkPointButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/checkpoint"
+                    android:text="CheckPoint" />
+
+                <Button
+                    android:id="@+id/rightButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Right" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
 </LinearLayout>
