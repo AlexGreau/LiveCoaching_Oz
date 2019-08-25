@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private String order;
     private int interactionType;
     private int trialNumber;
-    private int numberOfCorrectionMade;
+    private int totalAttemps;
     private int totalSuccess;
     private long timetookForOrder;
     private long startOfOrderTime;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startTime = date.getTime();
         finishTime = date.getTime();
         totalTime = 0;
-        numberOfCorrectionMade = 0;
+        totalAttemps = 0;
         totalSuccess = 0;
         isVisualRequested = true;
         isHapticRequested = true;
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
         if (!isTestMode) {
-            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), trialNumber, numberOfCorrectionMade, totalSuccess, totalTime);
+            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), trialNumber, totalAttemps, totalSuccess, totalTime);
         }
         sendOrder(finishOrder);
 
@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private void sendOrder(String order) {
         Log.d(TAG, "sending order : " + order);
         determineInteraction();
+        totalAttemps++;
         String message = interactionType + separator + order;
         myClientTask = new ClientTask(message, this);
         myClientTask.execute();
@@ -388,9 +389,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private double calculateSuccessRate() {
-        double nAttempts = numberOfCorrectionMade;
+        double nAttempts = totalAttemps;
         double nSuccess = totalSuccess;
-        if (numberOfCorrectionMade == 0) {
+        if (totalAttemps == 0) {
             return 0;
         } else {
             return nSuccess / nAttempts;
@@ -535,12 +536,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         this.myClientTask = myClientTask;
     }
 
-    public int getNumberOfCorrectionMade() {
-        return numberOfCorrectionMade;
+    public int getTotalAttemps() {
+        return totalAttemps;
     }
 
-    public void setNumberOfCorrectionMade(int numberOfCorrectionMade) {
-        this.numberOfCorrectionMade = numberOfCorrectionMade;
+    public void setTotalAttemps(int totalAttemps) {
+        this.totalAttemps = totalAttemps;
     }
 
     public String getID() {

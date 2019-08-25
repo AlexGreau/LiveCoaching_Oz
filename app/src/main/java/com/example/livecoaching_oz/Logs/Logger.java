@@ -82,11 +82,11 @@ public class Logger {
         writeToLogFile(log, true, false);
     }
 
-    public void writeSimpleLog(String ID, String interactionType, int trialNumber, int totalCorrections, int totalSuccess, long totalTime) {
+    public void writeSimpleLog(String ID, String interactionType, int trialNumber, int totalAttempts, int totalSuccess, long totalTime) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
                 + trialNumber + separator
-                + totalCorrections + separator
+                + totalAttempts + separator
                 + totalSuccess + separator
                 + totalTime;
         writeToLogFile(log, true, true);
