@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.livecoaching_oz.Communication.ClientTask;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private Button straightButton;
     private Button checkPointButton;
     protected AlertDialog startRunDialog;
+    private Switch hapticSwitch;
+    private Switch visualSwitch;
 
     // Communication
     private ClientTask myClientTask;
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private String ID;
     private String Order;
     int interactionType;
+    private boolean isHapticRequested;
+    private boolean isVisualRequested;
 
     // Logger
 
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initCommunication();
     }
 
-    private void initValues(){
+    private void initValues() {
         numberOfCorrectionMade = 0;
         ID = "";
         Order = finishOrder;
@@ -94,13 +99,15 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initRightButton();
         initStraightButton();
         initCheckPointButton();
+        initHapticSwitch();
+        initVisualSwith();
     }
 
     private void initCommunication() {
         myClientTask = new ClientTask("hey !", this);
     }
 
-    private void initStartButton(){
+    private void initStartButton() {
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    private void initFinishButton(){
+    private void initFinishButton() {
         finishButton = findViewById(R.id.finishButton);
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     }
 
-    private void initRightButton(){
+    private void initRightButton() {
         rightButton = findViewById(R.id.rightButton);
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    private void initLeftButton(){
+    private void initLeftButton() {
         leftButton = findViewById(R.id.leftButton);
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    private void initStraightButton(){
+    private void initStraightButton() {
         straightButton = findViewById(R.id.straightButton);
         straightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,12 +159,32 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    private void initCheckPointButton(){
+    private void initCheckPointButton() {
         checkPointButton = findViewById(R.id.checkPointButton);
         checkPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendOrder(checkpointReachedOrder);
+            }
+        });
+    }
+
+    public void initHapticSwitch() {
+        hapticSwitch = findViewById(R.id.hapticSwitch);
+        hapticSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isHapticRequested = !isHapticRequested;
+            }
+        });
+    }
+
+    public void initVisualSwith() {
+        visualSwitch = findViewById(R.id.visualSwitch);
+        visualSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isVisualRequested = !isVisualRequested;
             }
         });
     }
@@ -175,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     // ~~~~~~~~~~~~  Logic functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private void startRun(String ID){
+    private void startRun(String ID) {
         initValues();
         sendOrder(startOrder);
         Date date = new Date();
@@ -183,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         // update UI
     }
 
-    private void finishRun(){
+    private void finishRun() {
         Date date = new Date();
         finishTime = date.getTime();
         totalTime = finishTime - startTime;
@@ -193,8 +220,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initValues();
     }
 
-    private void sendOrder(String order){
+    private void sendOrder(String order) {
         Log.d(TAG, "sending order : " + order);
+        determineInterationINT();
         String message = interactionType + separator + order;
         myClientTask = new ClientTask(message, this);
         myClientTask.execute();
@@ -206,10 +234,28 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return matcher.matches();
     }
 
+    private void determineInterationINT() {
+        if (!isHapticRequested && !isVisualRequested) {
+            hapticSwitch.performClick();
+            visualSwitch.performClick();
+            return;
+        } else if (isHapticRequested && isVisualRequested) {
+            // both
+            interactionType = bothCode;
+        } else if (isVisualRequested && !isHapticRequested) {
+            // only visual
+            interactionType = visualCode;
+
+        } else if (isHapticRequested && !isVisualRequested) {
+            // only haptic
+            interactionType = hapticCode;
+        }
+    }
+
     // ~~~~~~~~~~~~  dialog Builder functions  ~~~~~~~~~~~~~~~
 
-    private AlertDialog buildStartDialog(){
-       AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private AlertDialog buildStartDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_start, null);
 
@@ -241,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return builder.create();
     }
 
-    private AlertDialog buildStopRunDialog(){
+    private AlertDialog buildStopRunDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Finish Experience")
                 .setMessage("Are you sure you want to end this experience?")
@@ -346,5 +392,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     public void setFinishTime(long finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
     }
 }

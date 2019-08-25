@@ -7,11 +7,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
@@ -37,21 +32,36 @@
         android:id="@+id/leftButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Left"
-        android:backgroundTint="@color/orderColor" />
+        android:backgroundTint="@color/orderColor"
+        android:text="Left" />
 
     <Button
         android:id="@+id/rightButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Right"
-        android:backgroundTint="@color/orderColor" />
+        android:backgroundTint="@color/orderColor"
+        android:text="Right" />
 
     <Button
+        android:id="@+id/checkPointButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkPointButton"
-        android:text="CheckPoint"
-        android:backgroundTint="@color/checkpoint"/>
+        android:backgroundTint="@color/checkpoint"
+        android:text="CheckPoint" />
 
+    <Switch
+        android:id="@+id/hapticSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchPadding="5dp"
+        android:text="Haptic Feedback"
+        />
+
+    <Switch
+        android:id="@+id/visualSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Visual Feedback"
+        android:switchPadding="5dp"
+        />
 </LinearLayout>
