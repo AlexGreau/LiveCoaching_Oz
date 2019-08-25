@@ -7,4 +7,6 @@
     <color name="startColor">#24ab38</color>
     <color name="orderColor">#f7f5ad</color>
     <color name="checkpoint">#3460c7</color>
+    <color name="successColor">#00a12b</color>
+    <color name="failColor">#a10000</color>
 </resources>
