@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     protected AlertDialog startRunDialog;
     private Switch hapticSwitch;
     private Switch visualSwitch;
+    private Chronometer chronometer;
 
     // Communication
     private ClientTask myClientTask;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         setContentView(R.layout.activity_main);
         init();
         setFullScreen();
+        System.out.println(TAG);
     }
 
     // ~~~~~~~~~~~~  inits  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,11 +105,17 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initCheckPointButton();
         initHapticSwitch();
         initVisualSwith();
+        initChrono();
         updateUI(false);
     }
 
     private void initCommunication() {
         myClientTask = new ClientTask("hey !", this);
+    }
+
+    private void initChrono(){
+        chronometer = findViewById(R.id.chronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime());
     }
 
     private void initStartButton() {
@@ -208,6 +218,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         sendOrder(startOrder);
         Date date = new Date();
         startTime = date.getTime();
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
         updateUI(true);
     }
 
@@ -215,6 +227,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         Date date = new Date();
         finishTime = date.getTime();
         totalTime = finishTime - startTime;
+        Log.d(TAG, "calculated total time" + totalTime);
+        chronometer.stop();
+        Log.d(TAG, "chrono time" + chronometer.getBase());
         // log Values
         sendOrder(finishOrder);
         updateUI(false);
