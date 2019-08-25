@@ -73,9 +73,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private long endOfOrderTime;
 
     // Flags
-    private boolean isHapticRequested;
-    private boolean isVisualRequested;
-    private boolean isTestMode;
+    private boolean isHapticRequested = true;
+    private boolean isVisualRequested = true;
+    private boolean isTestMode = false;
 
     // Logger
     private Logger logger;
@@ -106,9 +106,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         totalTime = 0;
         totalAttemps = 0;
         totalSuccess = 0;
-        isVisualRequested = true;
-        isHapticRequested = true;
-        isTestMode = false;
         determineInteraction();
     }
 
@@ -193,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             public void onClick(View v) {
                 enableSuccFailButtons(true);
                 enableOrdersButtons(false);
-                order=goLeftOrder;
+                order = goLeftOrder;
                 sendOrder(goLeftOrder);
             }
         });
@@ -219,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             public void onClick(View v) {
                 enableSuccFailButtons(true);
                 enableOrdersButtons(false);
-                order = checkpointReachedOrder ;
+                order = checkpointReachedOrder;
                 sendOrder(checkpointReachedOrder);
             }
         });
@@ -232,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             @Override
             public void onClick(View v) {
                 isHapticRequested = !isHapticRequested;
+                determineInteraction();
             }
         });
     }
@@ -243,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             @Override
             public void onClick(View v) {
                 isVisualRequested = !isVisualRequested;
+                determineInteraction();
             }
         });
     }
