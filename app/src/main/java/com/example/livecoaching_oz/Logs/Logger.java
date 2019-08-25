@@ -45,7 +45,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 completeLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID;interaction;trial;actualDirection;correction;timestamp ", false, false);
+                writeToLogFile("Structure : \nID;interaction;trial;correction;success;timeTook", false, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,7 +58,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 simpleLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID;interaction;trial;NcorrectionSent;totalTime;", false, true);
+                writeToLogFile("Structure : \nID;interaction;trial;NcorrectionSent;totalSuccess;totalTime;", false, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -73,12 +73,10 @@ public class Logger {
         logs = array;
     }
 
-    public void writeCompleteLog(String ID, String interactionType, int difficulty, int trialNumber, int actualDirection, int correction, boolean success, long timeTook) {
+    public void writeCompleteLog(String ID, String interactionType, int trialNumber, String correction, boolean success, long timeTook) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
-                + difficulty + separator
                 + trialNumber + separator
-                + actualDirection + separator
                 + correction + separator
                 + success + separator
                 + timeTook;
