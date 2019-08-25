@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initCheckPointButton();
         initHapticSwitch();
         initVisualSwith();
+        updateUI(false);
     }
 
     private void initCommunication() {
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         sendOrder(startOrder);
         Date date = new Date();
         startTime = date.getTime();
-        // update UI
+        updateUI(true);
     }
 
     private void finishRun() {
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         totalTime = finishTime - startTime;
         // log Values
         sendOrder(finishOrder);
-        // update UI
+        updateUI(false);
         initValues();
     }
 
@@ -304,6 +305,19 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     // ~~~~~~~~~~~~ UI functions  ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void updateUI(boolean isRunning){
+        finishButton.setEnabled(isRunning);
+        straightButton.setEnabled(isRunning);
+        rightButton.setEnabled(isRunning);
+        leftButton.setEnabled(isRunning);
+        checkPointButton.setEnabled(isRunning);
+        startButton.setEnabled(!isRunning);
+    }
+
+    private void setUITestMode(){
+
+    }
 
     protected void setFullScreen() {
         this.getWindow().getDecorView().setSystemUiVisibility(
