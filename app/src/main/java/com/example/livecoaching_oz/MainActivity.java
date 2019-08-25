@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     protected AlertDialog startRunDialog;
     private Switch hapticSwitch;
     private Switch visualSwitch;
+    private Switch testModeSwitch;
     private Chronometer chronometer;
 
     // Communication
@@ -62,9 +63,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private long totalTime;
     private String ID;
     private String Order;
-    int interactionType;
+    private int interactionType;
     private boolean isHapticRequested;
     private boolean isVisualRequested;
+    private boolean isTestMode;
 
     // Logger
 
@@ -93,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startTime = date.getTime();
         finishTime = date.getTime();
         totalTime = 0;
-        interactionType = bothCode;
+        isVisualRequested = true;
+        isHapticRequested = true;
+        isTestMode = false;
+        determineInterationINT();
     }
 
     private void initUI() {
@@ -107,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initCheckPointButton();
         initHapticSwitch();
         initVisualSwith();
+        initTestModeSwitch();
         initChrono();
         updateUI(false);
     }
@@ -125,8 +131,13 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRunDialog = buildStartDialog();
-                startRunDialog.show();
+                if (isTestMode){
+                    startRun();
+                } else {
+                    startRunDialog = buildStartDialog();
+                    startRunDialog.show();
+                }
+
             }
         });
     }
@@ -136,7 +147,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buildStopRunDialog().show();
+                if (isTestMode){
+                    finishRun();
+                } else {
+                    buildStopRunDialog().show();
+                }
             }
         });
 
@@ -184,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     public void initHapticSwitch() {
         hapticSwitch = findViewById(R.id.hapticSwitch);
+        hapticSwitch.setChecked(isHapticRequested);
         hapticSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,10 +210,22 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     public void initVisualSwith() {
         visualSwitch = findViewById(R.id.visualSwitch);
+        visualSwitch.setChecked(isVisualRequested);
         visualSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isVisualRequested = !isVisualRequested;
+            }
+        });
+    }
+
+    private void initTestModeSwitch() {
+        testModeSwitch = findViewById(R.id.testModeSwitch);
+        testModeSwitch.setChecked(isTestMode);
+        testModeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isTestMode = testModeSwitch.isChecked();
             }
         });
     }
@@ -215,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     // ~~~~~~~~~~~~  Logic functions  ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private void startRun(String ID) {
+    private void startRun() {
         initValues();
         sendOrder(startOrder);
         Date date = new Date();
@@ -233,8 +261,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         chronometer.setBase(SystemClock.elapsedRealtime());
         // log Values
         sendOrder(finishOrder);
-        updateUI(false);
         initValues();
+        updateUI(false);
     }
 
     private void sendOrder(String order) {
@@ -290,8 +318,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 Log.d(TAG, textId);
                 if (isValid(textId)) {
                     ID = textId;
-
-                    startRun(textId);
+                    startRun();
                     startRunDialog.dismiss();
                 } else {
                     errorText.setTextColor(Color.RED);
@@ -336,10 +363,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         leftButton.setEnabled(isRunning);
         checkPointButton.setEnabled(isRunning);
         startButton.setEnabled(!isRunning);
-    }
-
-    private void setUITestMode() {
-
     }
 
     protected void setFullScreen() {
