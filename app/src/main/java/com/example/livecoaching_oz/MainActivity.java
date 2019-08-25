@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initStraightButton();
         initCheckPointButton();
         initHapticSwitch();
-        initVisualSwith();
+        initVisualSwitch();
         initTestModeSwitch();
         initChrono();
         updateUI(false);
@@ -216,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    public void initVisualSwith() {
+    public void initVisualSwitch() {
         visualSwitch = findViewById(R.id.visualSwitch);
         visualSwitch.setChecked(isVisualRequested);
         visualSwitch.setOnClickListener(new View.OnClickListener() {
