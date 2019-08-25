@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private boolean isHapticRequested;
     private boolean isVisualRequested;
     private boolean isTestMode;
+    private int trialNumber;
 
     // Logger
     private Logger logger;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         myClientTask = new ClientTask("hey !", this);
     }
 
-    private void initLogger(){
+    private void initLogger() {
         logger = new Logger(this);
 
     }
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTestMode){
+                if (isTestMode) {
                     startRun();
                 } else {
                     startRunDialog = buildStartDialog();
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTestMode){
+                if (isTestMode) {
                     finishRun();
                 } else {
                     buildStopRunDialog().show();
@@ -286,6 +287,13 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return matcher.matches();
     }
 
+
+    protected boolean isInt(String i) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(i);
+        return matcher.matches();
+    }
+
     private void determineInterationINT() {
         if (!isHapticRequested && !isVisualRequested) {
             hapticSwitch.performClick();
@@ -316,20 +324,31 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         builder.setTitle("Information needed");
         final EditText id = (EditText) view.findViewById(R.id.IDparticipant);
         final TextView errorText = view.findViewById(R.id.dialogErrorText);
+        final EditText trialNumberPicker = view.findViewById(R.id.trialNumberPicker);
 
         Button continueButton = view.findViewById(R.id.dialogOkButton);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String textId = id.getText().toString();
+                String trialN = trialNumberPicker.getText().toString();
                 Log.d(TAG, textId);
-                if (isValid(textId)) {
+                if (isValid(textId) && isInt(trialN)) {
                     ID = textId;
+                    trialNumber = Integer.parseInt(trialN);
                     startRun();
                     startRunDialog.dismiss();
                 } else {
+                    String error = "";
+                    if (!isValid(textId)) {
+                        error = "Invalid ID, please enter a single word without special characters";
+                    } else if (!isInt(trialN)) {
+                        error = "Please enter a valid number";
+                    } else {
+                        error = "please enter a single word without special characters and a valid number";
+                    }
                     errorText.setTextColor(Color.RED);
-                    errorText.setText("Invalid ID, please enter a single word without special characters");
+                    errorText.setText(error);
                     errorText.setVisibility(View.VISIBLE);
                 }
             }
