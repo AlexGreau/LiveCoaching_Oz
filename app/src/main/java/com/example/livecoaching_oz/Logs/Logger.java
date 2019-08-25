@@ -26,7 +26,6 @@ public class Logger {
     protected final String simpleLogsFileName = "OzSimpleTrainingLogs.txt";
     protected final String filePath = "LogsDirectory";
     protected final String separator = ";";
-    protected final String coordinatesSeparator = ",";
     protected Context context;
 
     public Logger(Context context) {
