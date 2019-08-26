@@ -44,7 +44,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 completeLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID; interaction; checkpoint number; order sent; order number; timeStamp;success?", false, false);
+                writeToLogFile("Structure : \nID; interaction; checkpoint number; order sent; timeStamp;success?", false, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }

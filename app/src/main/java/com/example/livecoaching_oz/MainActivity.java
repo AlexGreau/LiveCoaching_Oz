@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private final String goDownOrder = "Down";
     private final String finishOrder = "Finish";
     private final String startOrder = "Start";
-    private final String checkpointReachedOrder = "CP";
+    private final String checkpointReachedOrder = "CheckPoint";
     private final int hapticCode = -1;
     private final int visualCode = 1;
     private final int bothCode = 0;
