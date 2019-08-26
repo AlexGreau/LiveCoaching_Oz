@@ -72,20 +72,19 @@ public class Logger {
         logs = array;
     }
 
-    public void writeCompleteLog(String ID, String interactionType, int trialNumber, String correction, boolean success, long timeTook) {
+    public void writeCompleteLog(String ID, String interactionType, String order, long timeTook, boolean success) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
-                + trialNumber + separator
-                + correction + separator
-                + success + separator
-                + timeTook;
+                + order + separator
+                + timeTook + separator
+                + success;
         writeToLogFile(log, true, false);
     }
 
-    public void writeSimpleLog(String ID, String interactionType, int trialNumber, int totalAttempts, int totalSuccess, long totalTime) {
+    public void writeSimpleLog(String ID, String interactionType, int totalCheckpoints,int totalAttempts, int totalSuccess, long totalTime) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
-                + trialNumber + separator
+                + totalCheckpoints + separator
                 + totalAttempts + separator
                 + totalSuccess + separator
                 + totalTime;
