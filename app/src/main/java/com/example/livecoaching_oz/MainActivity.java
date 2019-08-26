@@ -481,16 +481,14 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         builder.setTitle("Information needed");
         final EditText id = (EditText) view.findViewById(R.id.IDparticipant);
         final TextView errorText = view.findViewById(R.id.dialogErrorText);
-        final EditText trialNumberPicker = view.findViewById(R.id.trialNumberPicker);
 
         Button continueButton = view.findViewById(R.id.dialogOkButton);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String textId = id.getText().toString();
-                String trialN = trialNumberPicker.getText().toString();
                 Log.d(TAG, textId);
-                if (isValid(textId) && isInt(trialN)) {
+                if (isValid(textId)) {
                     ID = textId;
                     startRun();
                     startRunDialog.dismiss();
@@ -498,10 +496,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                     String error = "";
                     if (!isValid(textId)) {
                         error = "Invalid ID, please enter a single word without special characters";
-                    } else if (!isInt(trialN)) {
-                        error = "Please enter a valid number";
-                    } else {
-                        error = "please enter a single word without special characters and a valid number";
                     }
                     errorText.setTextColor(Color.RED);
                     errorText.setText(error);

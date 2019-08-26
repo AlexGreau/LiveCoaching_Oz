@@ -18,7 +18,7 @@
 
         <EditText
             android:id="@+id/IDparticipant"
-            android:layout_width="410sp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dialogErrorText"
             android:layout_marginLeft="4dp"
@@ -27,13 +27,6 @@
             android:hint="participant ID"
             android:inputType="text" />
 
-        <EditText
-            android:layout_width="200sp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/IDparticipant"
-            android:hint="trial number"
-            android:id="@+id/trialNumberPicker"/>
     </LinearLayout>
 
     <TextView
