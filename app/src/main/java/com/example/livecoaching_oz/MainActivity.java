@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.livecoaching_oz.Communication.ClientTask;
 import com.example.livecoaching_oz.Communication.Decoder;
+import com.example.livecoaching_oz.Logs.Logger;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private Button rightButton;
     private Button straightButton;
     private Button checkPointButton;
+    private Button successButton;
+    private Button failButton;
     protected AlertDialog startRunDialog;
     private Switch hapticSwitch;
     private Switch visualSwitch;
@@ -59,16 +61,24 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // Logic Values
     private long startTime;
     private long finishTime;
-    private int numberOfCorrectionMade;
     private long totalTime;
     private String ID;
-    private String Order;
+    private String order;
     private int interactionType;
-    private boolean isHapticRequested;
-    private boolean isVisualRequested;
-    private boolean isTestMode;
+    private int trialNumber;
+    private int totalAttemps;
+    private int totalSuccess;
+    private long timetookForOrder;
+    private long startOfOrderTime;
+    private long endOfOrderTime;
+
+    // Flags
+    private boolean isHapticRequested = true;
+    private boolean isVisualRequested = true;
+    private boolean isTestMode = false;
 
     // Logger
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,20 +95,18 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initValues();
         initUI();
         initCommunication();
+        initLogger();
     }
 
     private void initValues() {
-        numberOfCorrectionMade = 0;
-        ID = "";
-        Order = finishOrder;
+        order = finishOrder;
         Date date = new Date();
         startTime = date.getTime();
         finishTime = date.getTime();
         totalTime = 0;
-        isVisualRequested = true;
-        isHapticRequested = true;
-        isTestMode = false;
-        determineInterationINT();
+        totalAttemps = 0;
+        totalSuccess = 0;
+        determineInteraction();
     }
 
     private void initUI() {
@@ -111,14 +119,20 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initStraightButton();
         initCheckPointButton();
         initHapticSwitch();
-        initVisualSwith();
+        initVisualSwitch();
         initTestModeSwitch();
         initChrono();
+        initSuccessFailButtons();
         updateUI(false);
     }
 
     private void initCommunication() {
         myClientTask = new ClientTask("hey !", this);
+    }
+
+    private void initLogger() {
+        logger = new Logger(this);
+
     }
 
     private void initChrono() {
@@ -131,13 +145,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTestMode){
+                if (isTestMode) {
                     startRun();
                 } else {
                     startRunDialog = buildStartDialog();
                     startRunDialog.show();
                 }
-
             }
         });
     }
@@ -147,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTestMode){
+                if (isTestMode) {
                     finishRun();
                 } else {
                     buildStopRunDialog().show();
@@ -162,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableSuccFailButtons(true);
+                enableOrdersButtons(false);
+                order = goRightOrder;
                 sendOrder(goRightOrder);
             }
         });
@@ -172,6 +188,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableSuccFailButtons(true);
+                enableOrdersButtons(false);
+                order = goLeftOrder;
                 sendOrder(goLeftOrder);
             }
         });
@@ -182,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableSuccFailButtons(true);
+                enableOrdersButtons(false);
+                order = goStraightOrder;
                 sendOrder(goStraightOrder);
             }
         });
@@ -192,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         checkPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableSuccFailButtons(true);
+                enableOrdersButtons(false);
+                order = checkpointReachedOrder;
                 sendOrder(checkpointReachedOrder);
             }
         });
@@ -204,17 +229,19 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             @Override
             public void onClick(View v) {
                 isHapticRequested = !isHapticRequested;
+                determineInteraction();
             }
         });
     }
 
-    public void initVisualSwith() {
+    public void initVisualSwitch() {
         visualSwitch = findViewById(R.id.visualSwitch);
         visualSwitch.setChecked(isVisualRequested);
         visualSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isVisualRequested = !isVisualRequested;
+                determineInteraction();
             }
         });
     }
@@ -230,10 +257,45 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
+    private void initSuccessFailButtons() {
+        successButton = findViewById(R.id.successButton);
+        failButton = findViewById(R.id.failButton);
+        enableSuccFailButtons(false);
+
+        successButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                totalSuccess++;
+                Date date = new Date();
+                endOfOrderTime = date.getTime();
+                timetookForOrder = endOfOrderTime - startOfOrderTime;
+                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), trialNumber, order, true, timetookForOrder);
+                enableSuccFailButtons(false);
+                enableOrdersButtons(true);
+            }
+        });
+
+        failButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = new Date();
+                endOfOrderTime = date.getTime();
+                timetookForOrder = endOfOrderTime - startOfOrderTime;
+                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), trialNumber, order, false, timetookForOrder);
+                enableSuccFailButtons(false);
+                enableOrdersButtons(true);
+            }
+        });
+    }
+
     // ~~~~~~~~~~~~ Decoder methods  ~~~~~~~~~~~~~~~~~~~~~~~~
     @Override
     public void decodeResponse(String rep) {
         Log.d(TAG, "rep : " + rep);
+        successButton.setEnabled(true);
+        failButton.setEnabled(true);
+        Date date = new Date();
+        startOfOrderTime = date.getTime();
     }
 
     @Override
@@ -245,12 +307,14 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     private void startRun() {
         initValues();
+        order = startOrder;
         sendOrder(startOrder);
         Date date = new Date();
         startTime = date.getTime();
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         updateUI(true);
+        enableOrdersButtons(false); // cus checking if start order is well received
     }
 
     private void finishRun() {
@@ -259,15 +323,19 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         totalTime = finishTime - startTime;
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
-        // log Values
+        if (!isTestMode) {
+            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), trialNumber, totalAttemps, totalSuccess, totalTime);
+        }
         sendOrder(finishOrder);
+
         initValues();
         updateUI(false);
     }
 
     private void sendOrder(String order) {
         Log.d(TAG, "sending order : " + order);
-        determineInterationINT();
+        determineInteraction();
+        totalAttemps++;
         String message = interactionType + separator + order;
         myClientTask = new ClientTask(message, this);
         myClientTask.execute();
@@ -279,7 +347,14 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         return matcher.matches();
     }
 
-    private void determineInterationINT() {
+
+    protected boolean isInt(String i) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(i);
+        return matcher.matches();
+    }
+
+    private void determineInteraction() {
         if (!isHapticRequested && !isVisualRequested) {
             hapticSwitch.performClick();
             visualSwitch.performClick();
@@ -297,6 +372,31 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         }
     }
 
+    private String getInteractionTypeString(int i) {
+        String res = "";
+        if (i == bothCode) {
+            res = "both";
+        } else if (i == hapticCode) {
+            res = "haptic";
+        } else if (i == visualCode) {
+            res = "visual";
+        } else {
+            res = "invalid";
+        }
+
+        return res;
+    }
+
+    private double calculateSuccessRate() {
+        double nAttempts = totalAttemps;
+        double nSuccess = totalSuccess;
+        if (totalAttemps == 0) {
+            return 0;
+        } else {
+            return nSuccess / nAttempts;
+        }
+    }
+
     // ~~~~~~~~~~~~  dialog Builder functions  ~~~~~~~~~~~~~~~
 
     private AlertDialog buildStartDialog() {
@@ -309,20 +409,31 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         builder.setTitle("Information needed");
         final EditText id = (EditText) view.findViewById(R.id.IDparticipant);
         final TextView errorText = view.findViewById(R.id.dialogErrorText);
+        final EditText trialNumberPicker = view.findViewById(R.id.trialNumberPicker);
 
         Button continueButton = view.findViewById(R.id.dialogOkButton);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String textId = id.getText().toString();
+                String trialN = trialNumberPicker.getText().toString();
                 Log.d(TAG, textId);
-                if (isValid(textId)) {
+                if (isValid(textId) && isInt(trialN)) {
                     ID = textId;
+                    trialNumber = Integer.parseInt(trialN);
                     startRun();
                     startRunDialog.dismiss();
                 } else {
+                    String error = "";
+                    if (!isValid(textId)) {
+                        error = "Invalid ID, please enter a single word without special characters";
+                    } else if (!isInt(trialN)) {
+                        error = "Please enter a valid number";
+                    } else {
+                        error = "please enter a single word without special characters and a valid number";
+                    }
                     errorText.setTextColor(Color.RED);
-                    errorText.setText("Invalid ID, please enter a single word without special characters");
+                    errorText.setText(error);
                     errorText.setVisibility(View.VISIBLE);
                 }
             }
@@ -337,6 +448,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 .setMessage("Are you sure you want to end this experience?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        order = finishOrder;
                         finishRun();
                     }
                 })
@@ -357,12 +469,21 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             findViewById(R.id.startBar).setVisibility(View.VISIBLE);
             findViewById(R.id.runningBar).setVisibility(View.GONE);
         }
-        finishButton.setEnabled(isRunning);
-        straightButton.setEnabled(isRunning);
-        rightButton.setEnabled(isRunning);
-        leftButton.setEnabled(isRunning);
-        checkPointButton.setEnabled(isRunning);
+        enableOrdersButtons(isRunning);
         startButton.setEnabled(!isRunning);
+    }
+
+    private void enableSuccFailButtons(boolean enable) {
+        successButton.setEnabled(enable);
+        failButton.setEnabled(enable);
+    }
+
+    private void enableOrdersButtons(boolean enable) {
+        finishButton.setEnabled(enable);
+        straightButton.setEnabled(enable);
+        rightButton.setEnabled(enable);
+        leftButton.setEnabled(enable);
+        checkPointButton.setEnabled(enable);
     }
 
     protected void setFullScreen() {
@@ -414,12 +535,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         this.myClientTask = myClientTask;
     }
 
-    public int getNumberOfCorrectionMade() {
-        return numberOfCorrectionMade;
+    public int getTotalAttemps() {
+        return totalAttemps;
     }
 
-    public void setNumberOfCorrectionMade(int numberOfCorrectionMade) {
-        this.numberOfCorrectionMade = numberOfCorrectionMade;
+    public void setTotalAttemps(int totalAttemps) {
+        this.totalAttemps = totalAttemps;
     }
 
     public String getID() {
@@ -431,11 +552,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     public String getOrder() {
-        return Order;
+        return order;
     }
 
     public void setOrder(String order) {
-        Order = order;
+        this.order = order;
     }
 
     public long getStartTime() {
