@@ -44,7 +44,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 completeLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID; interaction; checkpoint number; order sent; timeStamp;success?", false, false);
+                writeToLogFile("Structure : \nID; interaction; checkpoint number; order sent; order number; timeStamp;success?", false, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,7 +57,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 simpleLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID; interaction; total CheckPoints; total Orders Sent; total Success; totalTime", false, true);
+                writeToLogFile("Structure : \nID; interaction; total CheckPoints; total Orders Sent; total Success; totalTime(ms)", false, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,17 +72,17 @@ public class Logger {
         logs = array;
     }
 
-    public void writeCompleteLog(String ID, String interactionType,int checkpointNumber ,String order, long timeStamp, String successOrRepetition) {
+    public void writeCompleteLog(String ID, String interactionType, int checkpointNumber, String order, long timeStamp, String successOrRepetition) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
-                +checkpointNumber + separator
+                + checkpointNumber + separator
                 + order + separator
                 + timeStamp + separator
                 + successOrRepetition;
         writeToLogFile(log, true, false);
     }
 
-    public void writeSimpleLog(String ID, String interactionType, int totalCheckpoints,int totalAttempts, int totalSuccess, long totalTime) {
+    public void writeSimpleLog(String ID, String interactionType, int totalCheckpoints, int totalAttempts, int totalSuccess, long totalTime) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
                 + totalCheckpoints + separator

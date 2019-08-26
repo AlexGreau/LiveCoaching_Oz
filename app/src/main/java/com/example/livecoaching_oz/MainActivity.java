@@ -14,7 +14,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -75,9 +74,10 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private long totalTime;
     private String ID;
     private String order;
+    private int orderNumber;
     private int interactionType;
     private int totalCheckpoints;
-    private int totalAttemps;
+    private int totalOrdersSent;
     private int totalSuccess;
     private long timetookForOrder;
     private long startOfOrderTime;
@@ -116,8 +116,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         finishTime = date.getTime();
         totalTime = 0;
         totalCheckpoints = 0;
-        totalAttemps = 0;
+        totalOrdersSent = 0;
         totalSuccess = 0;
+        orderNumber = 0;
         determineInteraction();
     }
 
@@ -185,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 }
             }
         });
-
     }
 
     private void initRightButton() {
@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goRightOrder;
                 orderButtonClicked();
             }
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goLeftOrder;
                 orderButtonClicked();
             }
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         upLeftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goUpLeftOrder;
                 orderButtonClicked();
             }
@@ -226,89 +229,99 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goStraightOrder;
                 orderButtonClicked();
             }
         });
     }
 
-    private void initUpRightButton(){
+    private void initUpRightButton() {
         upRightButton = findViewById(R.id.upRightButton);
         upRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                order=goUpRightOrder;
+                totalCheckpoints++;
+                order = goUpRightOrder;
                 orderButtonClicked();
             }
         });
     }
 
-    private void initDownLeftButton(){
+    private void initDownLeftButton() {
         downLeftButton = findViewById(R.id.downLeftButton);
         downLeftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goDownLeftOrder;
                 orderButtonClicked();
             }
         });
     }
 
-    private void initDownButton(){
+    private void initDownButton() {
         downButton = findViewById(R.id.downButton);
         downButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goDownOrder;
                 orderButtonClicked();
             }
         });
     }
 
-    private void initDownRightButton(){
+    private void initDownRightButton() {
         downRightButton = findViewById(R.id.downRightButton);
         downRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                totalCheckpoints++;
                 order = goDownRightOrder;
                 orderButtonClicked();
             }
         });
     }
 
-    private void initRepeatOrderButton(){
+    private void initRepeatOrderButton() {
         repeatOrderButton = findViewById(R.id.avatar);
         repeatOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 orderButtonClicked();
                 Date date = new Date();
-                endOfOrderTime = date.getTime();
-                timetookForOrder = endOfOrderTime - startOfOrderTime;
-                logger.writeCompleteLog(ID,getInteractionTypeString(interactionType),totalCheckpoints,order,endOfOrderTime,"repetition");
+                long timestamp = date.getTime();
+                if (!isTestMode) {
+                    logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), totalCheckpoints, order, timestamp, "repetition");
+                }
             }
         });
     }
 
     private void initCheckPointButton() {
         checkPointButton = findViewById(R.id.checkPointButton);
+
         checkPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                order = checkpointReachedOrder;
-                sendOrder(checkpointReachedOrder);
                 Date date = new Date();
                 endOfOrderTime = date.getTime();
+                long timestamp = date.getTime();
                 timetookForOrder = endOfOrderTime - startOfOrderTime;
-                totalCheckpoints ++;
-                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType),totalCheckpoints,order,timetookForOrder,"success");
+                totalSuccess++;
+                if (!isTestMode) {
+                    logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), totalCheckpoints, order, timestamp, "success");
+                }
+                order = checkpointReachedOrder;
+                sendOrder(checkpointReachedOrder);
                 enableSuccFailButtons(false);
                 enableOrdersButtons(true);
             }
         });
     }
 
-    public void initHapticSwitch() {
+    private void initHapticSwitch() {
         hapticSwitch = findViewById(R.id.hapticSwitch);
         hapticSwitch.setChecked(isHapticRequested);
         hapticSwitch.setOnClickListener(new View.OnClickListener() {
@@ -320,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
-    public void initVisualSwitch() {
+    private void initVisualSwitch() {
         visualSwitch = findViewById(R.id.visualSwitch);
         visualSwitch.setChecked(isVisualRequested);
         visualSwitch.setOnClickListener(new View.OnClickListener() {
@@ -352,8 +365,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             public void onClick(View v) {
                 Date date = new Date();
                 endOfOrderTime = date.getTime();
+                long timestamp = date.getTime();
                 timetookForOrder = endOfOrderTime - startOfOrderTime;
-                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), totalCheckpoints,order, timetookForOrder,"fail");
+                if (!isTestMode) {
+                    logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), totalCheckpoints, order, timestamp, "fail");
+                }
                 enableSuccFailButtons(false);
                 enableOrdersButtons(true);
             }
@@ -364,8 +380,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     @Override
     public void decodeResponse(String rep) {
         Log.d(TAG, "rep : " + rep);
-        checkPointButton.setEnabled(true);
-        failButton.setEnabled(true);
+        if (!rep.equals("starting") || !rep.equals("cp")) {
+            enableSuccFailButtons(true);
+        }
         Date date = new Date();
         startOfOrderTime = date.getTime();
     }
@@ -397,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
         if (!isTestMode) {
-            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType),totalCheckpoints,totalAttemps,totalSuccess,totalTime);
+            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), totalCheckpoints, totalOrdersSent, totalSuccess, totalTime);
         }
         sendOrder(finishOrder);
 
@@ -408,7 +425,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private void sendOrder(String order) {
         Log.d(TAG, "sending order : " + order);
         determineInteraction();
-        totalAttemps++;
+        if (!order.equals(startOrder) && !order.equals(finishOrder) && !order.equals(checkpointReachedOrder)) {
+            totalOrdersSent++;
+        }
         String message = interactionType + separator + order;
         myClientTask = new ClientTask(message, this);
         myClientTask.execute();
@@ -461,9 +480,9 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private double calculateSuccessRate() {
-        double nAttempts = totalAttemps;
+        double nAttempts = totalOrdersSent;
         double nSuccess = totalSuccess;
-        if (totalAttemps == 0) {
+        if (totalOrdersSent == 0) {
             return 0;
         } else {
             return nSuccess / nAttempts;
@@ -536,6 +555,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
             findViewById(R.id.runningBar).setVisibility(View.GONE);
         }
         enableOrdersButtons(isRunning);
+        enableSuccFailButtons(!isRunning);
         startButton.setEnabled(!isRunning);
     }
 
@@ -612,12 +632,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         this.myClientTask = myClientTask;
     }
 
-    public int getTotalAttemps() {
-        return totalAttemps;
+    public int getTotalOrdersSent() {
+        return totalOrdersSent;
     }
 
-    public void setTotalAttemps(int totalAttemps) {
-        this.totalAttemps = totalAttemps;
+    public void setTotalOrdersSent(int totalOrdersSent) {
+        this.totalOrdersSent = totalOrdersSent;
     }
 
     public String getID() {
