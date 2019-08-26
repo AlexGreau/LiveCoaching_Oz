@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private final String goUpLeftOrder = "Up Left";
     private final String goUpRightOrder = "Up Right";
     private final String goDownLeftOrder = "Down Left";
-    private final String goDownRightOrder= "Down Right";
+    private final String goDownRightOrder = "Down Right";
     private final String goDownOrder = "Down";
     private final String finishOrder = "Finish";
     private final String startOrder = "Start";
@@ -48,11 +48,15 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     // UI components
     private Button startButton;
     private Button finishButton;
+    private Button upLeftButton;
+    private Button straightButton;
+    private Button upRightButton;
     private Button leftButton;
     private Button rightButton;
-    private Button straightButton;
+    private Button downLeftButton;
+    private Button downButton;
+    private Button downRightButton;
     private Button checkPointButton;
-    private Button successButton;
     private Button failButton;
     protected AlertDialog startRunDialog;
     private Switch hapticSwitch;
@@ -121,7 +125,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initFinishButton();
         initLeftButton();
         initRightButton();
+        initUpLeftButton();
         initStraightButton();
+        initUpRightButton();
+        initDownLeftButton();
+        initDownButton();
+        initDownRightButton();
         initCheckPointButton();
         initHapticSwitch();
         initVisualSwitch();
@@ -193,10 +202,19 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enableSuccFailButtons(true);
-                enableOrdersButtons(false);
                 order = goLeftOrder;
-                sendOrder(goLeftOrder);
+                orderButtonClicked();
+            }
+        });
+    }
+
+    private void initUpLeftButton() {
+        upLeftButton = findViewById(R.id.upLeftButton);
+        upLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order = goUpLeftOrder;
+                orderButtonClicked();
             }
         });
     }
@@ -206,10 +224,52 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enableSuccFailButtons(true);
-                enableOrdersButtons(false);
                 order = goStraightOrder;
-                sendOrder(goStraightOrder);
+                orderButtonClicked();
+            }
+        });
+    }
+
+    private void initUpRightButton(){
+        upRightButton = findViewById(R.id.upRightButton);
+        upRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order=goUpRightOrder;
+                orderButtonClicked();
+            }
+        });
+    }
+
+    private void initDownLeftButton(){
+        downLeftButton = findViewById(R.id.downLeftButton);
+        downLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order = goDownLeftOrder;
+                orderButtonClicked();
+            }
+        });
+    }
+
+    private void initDownButton(){
+        downButton = findViewById(R.id.downButton);
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order = goDownOrder;
+                orderButtonClicked();
+            }
+        });
+    }
+
+    private void initDownRightButton(){
+        downRightButton = findViewById(R.id.downRightButton);
+        downRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                order = goDownRightOrder;
+                orderButtonClicked();
             }
         });
     }
