@@ -44,7 +44,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 completeLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID;interaction;trial;correction;success;timeTook", false, false);
+                writeToLogFile("Structure : \nID; interaction; checkpoint number; order sent; timeStamp;success?", false, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,7 +57,7 @@ public class Logger {
             Log.e(TAG, "file does not exist... creating it");
             try {
                 simpleLogsFile.createNewFile();
-                writeToLogFile("Structure : \nID;interaction;trial;NcorrectionSent;totalSuccess;totalTime;", false, true);
+                writeToLogFile("Structure : \nID; interaction; total CheckPoints; total Orders Sent; total Success; totalTime", false, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
