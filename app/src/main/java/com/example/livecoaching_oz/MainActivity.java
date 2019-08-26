@@ -386,7 +386,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         updateUI(true);
-        enableOrdersButtons(false); // cus checking if start order is well received
+        enableOrdersButtons(true);
+        enableSuccFailButtons(false);
     }
 
     private void finishRun() {
@@ -539,6 +540,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void enableSuccFailButtons(boolean enable) {
+        repeatOrderButton.setEnabled(enable);
         checkPointButton.setEnabled(enable);
         failButton.setEnabled(enable);
     }
@@ -548,6 +550,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setEnabled(enable);
         rightButton.setEnabled(enable);
         leftButton.setEnabled(enable);
+        upLeftButton.setEnabled(enable);
+        upRightButton.setEnabled(enable);
+        downLeftButton.setEnabled(enable);
+        downButton.setEnabled(enable);
+        downRightButton.setEnabled(enable);
     }
 
     private void orderButtonClicked() {
