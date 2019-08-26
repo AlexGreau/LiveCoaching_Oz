@@ -155,13 +155,14 @@
 
                     android:text="Left" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/avatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/ic_person"
-                    android:clickable="false" />
+                    android:text="Repeat"
+                    android:drawableLeft="@drawable/ic_replay"
+                    />
 
                 <Button
                     android:id="@+id/rightButton"

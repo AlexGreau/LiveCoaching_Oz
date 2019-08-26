@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private Button downRightButton;
     private Button checkPointButton;
     private Button failButton;
+    private Button repeatOrderButton;
     protected AlertDialog startRunDialog;
     private Switch hapticSwitch;
     private Switch visualSwitch;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     private String ID;
     private String order;
     private int interactionType;
-    private int trialNumber;
+    private int totalCheckpoints;
     private int totalAttemps;
     private int totalSuccess;
     private long timetookForOrder;
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         startTime = date.getTime();
         finishTime = date.getTime();
         totalTime = 0;
+        totalCheckpoints = 0;
         totalAttemps = 0;
         totalSuccess = 0;
         determineInteraction();
@@ -132,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         initDownButton();
         initDownRightButton();
         initCheckPointButton();
+        initRepeatOrderButton();
         initHapticSwitch();
         initVisualSwitch();
         initTestModeSwitch();
@@ -189,10 +193,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enableSuccFailButtons(true);
-                enableOrdersButtons(false);
                 order = goRightOrder;
-                sendOrder(goRightOrder);
+                orderButtonClicked();
             }
         });
     }
@@ -274,15 +276,34 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         });
     }
 
+    private void initRepeatOrderButton(){
+        repeatOrderButton = findViewById(R.id.avatar);
+        repeatOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderButtonClicked();
+                Date date = new Date();
+                endOfOrderTime = date.getTime();
+                timetookForOrder = endOfOrderTime - startOfOrderTime;
+                logger.writeCompleteLog(ID,getInteractionTypeString(interactionType),totalCheckpoints,order,endOfOrderTime,"repetition");
+            }
+        });
+    }
+
     private void initCheckPointButton() {
         checkPointButton = findViewById(R.id.checkPointButton);
         checkPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enableSuccFailButtons(true);
-                enableOrdersButtons(false);
                 order = checkpointReachedOrder;
                 sendOrder(checkpointReachedOrder);
+                Date date = new Date();
+                endOfOrderTime = date.getTime();
+                timetookForOrder = endOfOrderTime - startOfOrderTime;
+                totalCheckpoints ++;
+                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType),totalCheckpoints,order,timetookForOrder,"success");
+                enableSuccFailButtons(false);
+                enableOrdersButtons(true);
             }
         });
     }
@@ -323,22 +344,8 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void initSuccessFailButtons() {
-        successButton = findViewById(R.id.successButton);
         failButton = findViewById(R.id.failButton);
         enableSuccFailButtons(false);
-
-        successButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                totalSuccess++;
-                Date date = new Date();
-                endOfOrderTime = date.getTime();
-                timetookForOrder = endOfOrderTime - startOfOrderTime;
-                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), trialNumber, order, true, timetookForOrder);
-                enableSuccFailButtons(false);
-                enableOrdersButtons(true);
-            }
-        });
 
         failButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 Date date = new Date();
                 endOfOrderTime = date.getTime();
                 timetookForOrder = endOfOrderTime - startOfOrderTime;
-                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), trialNumber, order, false, timetookForOrder);
+                logger.writeCompleteLog(ID, getInteractionTypeString(interactionType), totalCheckpoints,order, timetookForOrder,"fail");
                 enableSuccFailButtons(false);
                 enableOrdersButtons(true);
             }
@@ -357,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     @Override
     public void decodeResponse(String rep) {
         Log.d(TAG, "rep : " + rep);
-        successButton.setEnabled(true);
+        checkPointButton.setEnabled(true);
         failButton.setEnabled(true);
         Date date = new Date();
         startOfOrderTime = date.getTime();
@@ -389,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
         if (!isTestMode) {
-            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType), trialNumber, totalAttemps, totalSuccess, totalTime);
+            logger.writeSimpleLog(ID, getInteractionTypeString(interactionType),totalCheckpoints,totalAttemps,totalSuccess,totalTime);
         }
         sendOrder(finishOrder);
 
@@ -485,7 +492,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
                 Log.d(TAG, textId);
                 if (isValid(textId) && isInt(trialN)) {
                     ID = textId;
-                    trialNumber = Integer.parseInt(trialN);
                     startRun();
                     startRunDialog.dismiss();
                 } else {
@@ -539,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void enableSuccFailButtons(boolean enable) {
-        successButton.setEnabled(enable);
+        checkPointButton.setEnabled(enable);
         failButton.setEnabled(enable);
     }
 
@@ -548,7 +554,12 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setEnabled(enable);
         rightButton.setEnabled(enable);
         leftButton.setEnabled(enable);
-        checkPointButton.setEnabled(enable);
+    }
+
+    private void orderButtonClicked() {
+        enableSuccFailButtons(true);
+        enableOrdersButtons(false);
+        sendOrder(order);
     }
 
     protected void setFullScreen() {

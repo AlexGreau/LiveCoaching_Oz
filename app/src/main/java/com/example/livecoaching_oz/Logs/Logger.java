@@ -72,12 +72,13 @@ public class Logger {
         logs = array;
     }
 
-    public void writeCompleteLog(String ID, String interactionType, String order, long timeTook, boolean success) {
+    public void writeCompleteLog(String ID, String interactionType,int checkpointNumber ,String order, long timeStamp, String successOrRepetition) {
         String log = "\r\n" + ID + separator
                 + interactionType + separator
+                +checkpointNumber + separator
                 + order + separator
-                + timeTook + separator
-                + success;
+                + timeStamp + separator
+                + successOrRepetition;
         writeToLogFile(log, true, false);
     }
 
