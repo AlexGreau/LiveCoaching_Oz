@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goRightOrder;
                 orderButtonClicked();
             }
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goLeftOrder;
                 orderButtonClicked();
             }
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         upLeftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goUpLeftOrder;
                 orderButtonClicked();
             }
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         straightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goStraightOrder;
                 orderButtonClicked();
             }
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         upRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goUpRightOrder;
                 orderButtonClicked();
             }
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         downLeftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goDownLeftOrder;
                 orderButtonClicked();
             }
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         downButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goDownOrder;
                 orderButtonClicked();
             }
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         downRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                totalCheckpoints++;
+                updateTotalCheckPoints();
                 order = goDownRightOrder;
                 orderButtonClicked();
             }
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     private void initCheckPointButton() {
         checkPointButton = findViewById(R.id.checkPointButton);
-
+        checkPointButton.setText("Checkpoint");
         checkPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -397,6 +397,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
 
     private void startRun() {
         initValues();
+        checkPointButton.setText("Checkpoint");
         order = startOrder;
         sendOrder(startOrder);
         Date date = new Date();
@@ -582,6 +583,11 @@ public class MainActivity extends AppCompatActivity implements Decoder {
         enableSuccFailButtons(true);
         enableOrdersButtons(false);
         sendOrder(order);
+    }
+
+    private void updateTotalCheckPoints() {
+        totalCheckpoints++;
+        checkPointButton.setText("CheckPoint # " + totalCheckpoints);
     }
 
     protected void setFullScreen() {
