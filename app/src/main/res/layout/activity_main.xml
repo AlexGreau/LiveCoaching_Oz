@@ -83,8 +83,7 @@
     <RelativeLayout
         android:id="@+id/runningBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/finishButton"
@@ -96,73 +95,144 @@
             android:textSize="40sp" />
 
         <RelativeLayout
+            android:id="@+id/commands"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/finishButton">
+            android:layout_below="@id/finishButton"
+            android:layout_marginTop="20dp">
 
-            <Button
-                android:id="@+id/straightButton"
+            <LinearLayout
+                android:id="@+id/upOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:backgroundTint="@color/orderColor"
-                android:text="Straight" />
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/upLeftButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Up Left" />
+
+                <Button
+                    android:id="@+id/straightButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Straight" />
+
+                <Button
+                    android:id="@+id/upRightButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Up Right" />
+
+            </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/leftRightOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/straightButton"
-                android:orientation="horizontal"
-                android:id="@+id/commands">
+                android:layout_below="@id/upOrders"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/leftButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/orderColor"
+
                     android:text="Left" />
 
-                <Button
-                    android:id="@+id/checkPointButton"
+                <ImageButton
+                    android:id="@+id/avatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/checkpoint"
-                    android:text="CheckPoint" />
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_person"
+                    android:clickable="false" />
 
                 <Button
                     android:id="@+id/rightButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/orderColor"
                     android:text="Right" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="300sp"
+                android:id="@+id/downOrders"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/leftRightOrders"
                 android:orientation="horizontal"
-                android:layout_below="@id/commands"
-                android:layout_marginTop="20sp"
-                android:weightSum="2"
-                android:id="@+id/succFail"
-                android:layout_centerInParent="true">
+                android:weightSum="3">
 
                 <Button
-                    android:id="@+id/successButton"
+                    android:id="@+id/downLeftButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Down Left" />
+
+                <Button
+                    android:id="@+id/downButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Down" />
+
+                <Button
+                    android:id="@+id/downRightButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orderColor"
+                    android:text="Down Right" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/succFail"
+                android:layout_width="300sp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/downOrders"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20sp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/checkPointButton"
                     android:layout_width="wrap_content"
                     android:layout_height="80sp"
-                    android:backgroundTint="@color/successColor"
-                    android:text="Success"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/checkpoint"
+                    android:text="CheckPoint" />
 
                 <Button
                     android:id="@+id/failButton"
                     android:layout_width="wrap_content"
                     android:layout_height="80sp"
-                    android:backgroundTint="@color/failColor"
-                    android:text="Fail"
                     android:layout_weight="1"
-                    />
+                    android:backgroundTint="@color/failColor"
+                    android:text="Fail" />
             </LinearLayout>
 
 
