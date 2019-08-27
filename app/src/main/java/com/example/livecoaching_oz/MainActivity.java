@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     }
 
     private void sendOrder(String order) {
-        Log.d(TAG, "sending order : " + order);
+        Log.d(TAG, "sending order : " + order + ";" + interactionType);
         determineInteraction();
         if (!order.equals(startOrder) && !order.equals(finishOrder) && !order.equals(checkpointReachedOrder)) {
             totalOrdersSent++;
