@@ -2,7 +2,7 @@
 
 Cette application est a utiliser avec l'application [LiveCoached_Oz](https://github.com/AlexGreau/LiveCoached_Oz) pour montre WearOs. Cette paire d'application servant à conduire l'expérience cherchant à prouver nos hypothèses. Voici le schéma avec captures d'écran de la logique de la paire d'applications :
 
-![schemaOz](./readmeImages/flow.png)
+![schemaOz](https://github.com/AlexGreau/LiveCoaching_Oz/blob/master/readmeImages/flow.PNG)
 
 ## Main Activity
 
@@ -16,7 +16,7 @@ Pour cette paire d'application, c'est la montre qui est à l'écoute des ordres 
 Dès qu'elle voudra envoyer un ordre, la tablette créera une "ClientTask", une classe qui hérite de "AsyncTask" qui gèrera l'envoi des données en arrière plan sans perturber le UiThread.
 
 Voici le schéma des communications :
-![comm](./readmeImages/schemaOZ.png)
+![comm](https://github.com/AlexGreau/LiveCoaching_Oz/blob/master/readmeImages/schemaOz.PNG)
 
 Le message sera décodé par la fonction `void decodeResponse(String rep)`.
 La signature de cette fonction est définie dans l'interface "Decoder" que la mainActivity implémente.
