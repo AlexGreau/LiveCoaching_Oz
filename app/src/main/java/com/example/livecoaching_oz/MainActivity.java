@@ -381,7 +381,6 @@ public class MainActivity extends AppCompatActivity implements Decoder {
     public void decodeResponse(String rep) {
         Log.d(TAG, "rep : " + rep);
         if (!rep.equals("starting") && !rep.equals("cp")) {
-            System.out.println("yay");
             enableSuccFailButtons(true);
         }
         Date date = new Date();
